@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VyBzzZ - Dashboard Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .metric-change {
+            font-size: 0.9rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .metric-change.positive {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .metric-change.negative {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .chart-title {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .simple-chart {
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎵 VyBzzZ Dashboard Business</h1>
+        <p>Gestion des concerts et suivi des performances</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="metric-card">
+            <div class="metric-icon">🎵</div>
+            <div class="metric-value" id="concerts-count">0</div>
+            <div class="metric-label">Concerts Vendus</div>
+            <div class="metric-change positive" id="concerts-change">+0%</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-value" id="tips-total">€0</div>
+            <div class="metric-label">Total Pourboires</div>
+            <div class="metric-change positive" id="tips-change">+0%</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">🎫</div>
+            <div class="metric-value" id="tickets-sold">0</div>
+            <div class="metric-label">Tickets Vendus</div>
+            <div class="metric-change positive" id="tickets-change">+0%</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">👥</div>
+            <div class="metric-value" id="active-users">0</div>
+            <div class="metric-label">Utilisateurs Actifs</div>
+            <div class="metric-change positive" id="users-change">+0%</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <div class="chart-title">📊 Évolution des Ventes (7 derniers jours)</div>
+        <div class="simple-chart">
+            Graphique des ventes de concerts
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button class="action-btn" onclick="exportData()">
+            📊 Exporter les Données
+        </button>
+        <button class="action-btn" onclick="refreshData()">
+            🔄 Actualiser
+        </button>
+        <button class="action-btn" onclick="showDetails()">
+            📋 Voir les Détails
+        </button>
+        <button class="action-btn" onclick="contactSupport()">
+            💬 Support
+        </button>
+    </div>
+
+    <script>
+        // Données simulées pour la démo
+        let mockData = {
+            concerts: 42,
+            tips: 1250,
+            tickets: 156,
+            users: 89
+        };
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMetrics();
+            startLiveUpdates();
+        });
+        
+        function updateMetrics() {
+            document.getElementById('concerts-count').textContent = mockData.concerts;
+            document.getElementById('tips-total').textContent = '€' + mockData.tips;
+            document.getElementById('tickets-sold').textContent = mockData.tickets;
+            document.getElementById('active-users').textContent = mockData.users;
+        }
+        
+        function startLiveUpdates() {
+            // Simulation de mises à jour en temps réel
+            setInterval(() => {
+                // Simuler de nouvelles ventes
+                if (Math.random() > 0.7) {
+                    mockData.concerts += Math.floor(Math.random() * 3);
+                    mockData.tickets += Math.floor(Math.random() * 10);
+                    mockData.tips += Math.floor(Math.random() * 100);
+                    updateMetrics();
+                }
+            }, 10000); // Toutes les 10 secondes
+        }
+        
+        function exportData() {
+            alert('📊 Export des données en cours...\n\nConcerts: ' + mockData.concerts + '\nPourboires: €' + mockData.tips + '\nTickets: ' + mockData.tickets + '\nUtilisateurs: ' + mockData.users);
+        }
+        
+        function refreshData() {
+            // Simuler un refresh
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                alert('🔄 Données actualisées !');
+            }, 500);
+        }
+        
+        function showDetails() {
+            alert('📋 Détails des métriques :\n\n• Concerts populaires\n• Top des pourboires\n• Utilisateurs actifs\n• Zones géographiques');
+        }
+        
+        function contactSupport() {
+            alert('💬 Support VyBzzZ :\n\nEmail: support@vybzzz.com\nTéléphone: +33 1 23 45 67 89\nHoraires: 9h-18h (Lun-Ven)');
+        }
+        
+        // Animation d'entrée
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '1';
+        }, 100);
+    </script>
+</body>
+</html>
