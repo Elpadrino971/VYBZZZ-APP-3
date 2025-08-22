@@ -1,15 +1,30 @@
-# VyBzzZ Mobile App
+# 🎵 Vybzzz - Application Mobile Complète
 
-Application mobile de concerts en live avec vente de tickets.
+## 📱 Fonctionnalités
 
-## 🎵 Fonctionnalités
-- Live streaming de concerts
-- Vente de tickets
-- Shortzz des artistes
-- Dashboard business
+### Écrans disponibles :
+- **🏠 Home** : Liste des événements et concerts
+- **🔍 Discover** : Recherche et découverte d'événements
+- **➕ Create** : Création de contenu (vidéos, lives, photos)
+- **👤 Profile** : Profil utilisateur avec statistiques
 
-## 📱 Accès
-- **App mobile :** Page principale
-- **Dashboard :** /dashboard.html
+### 🎨 Thèmes :
+- **Mode clair** : Blanc et doré
+- **Mode sombre** : Noir et rouge Netflix
 
-## 🚀 Déployé sur GitHub Pages
+### 🚀 Navigation :
+- Navigation bottom intuitive
+- Bouton thème flottant
+- Transitions fluides entre écrans
+
+## 🌐 Accès :
+- **App mobile** : `index.html`
+- **Dashboard** : `dashboard.html`
+
+## 📱 Compatibilité :
+- ✅ Mobile (responsive)
+- ✅ PWA (Progressive Web App)
+- ✅ Tous les navigateurs modernes
+
+---
+*Développé avec ❤️ pour Vybzzz*
