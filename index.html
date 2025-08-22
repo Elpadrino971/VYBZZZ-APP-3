@@ -99,6 +99,27 @@
             animation: pulse 2s infinite;
         }
         
+        .pro-button {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pro-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
@@ -122,6 +143,44 @@
             gap: 10px;
         }
         
+        .create-live-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .create-live-btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .create-live-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        
+        .create-live-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .create-live-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
         .live-stream {
             background: var(--card-bg);
             border-radius: 15px;
@@ -143,6 +202,18 @@
             font-weight: bold;
             margin-bottom: 15px;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .live-video::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="2"/><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="1"/><circle cx="50" cy="50" r="20" fill="none" stroke="white" stroke-width="0.5"/></svg>') center/contain no-repeat;
+            opacity: 0.3;
         }
         
         .live-overlay {
@@ -220,6 +291,19 @@
             justify-content: center;
             color: white;
             font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shortz-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="40" fill="none" stroke="white" stroke-width="2"/><polygon points="35,40 35,60 55,50" fill="white"/></svg>') center/contain no-repeat;
+            opacity: 0.3;
         }
         
         .shortz-info {
@@ -301,6 +385,58 @@
             20%, 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
         
+        .settings-section, .login-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.8rem;
@@ -308,6 +444,12 @@
             
             .shortzz-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pro-button {
+                right: 70px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -318,6 +460,7 @@
     </button>
     
     <div class="live-indicator">🔴 EN DIRECT</div>
+    <button class="pro-button" onclick="openDashboard()">👑 PRO</button>
     
     <div class="header">
         <h1>🎵 VyBzzZ</h1>
@@ -325,6 +468,16 @@
     </div>
     
     <div class="main-content">
+        <!-- Section Créer un Live -->
+        <div class="section" id="create-live-section">
+            <div class="create-live-section">
+                <button class="create-live-btn" onclick="createLive()">
+                    🎥 CRÉER UN LIVE
+                </button>
+                <p class="create-live-info">Partagez votre concert avec le monde !</p>
+            </div>
+        </div>
+        
         <!-- Section Live Streaming -->
         <div class="section" id="live-section">
             <div class="section-title">
@@ -418,6 +571,55 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Section Settings -->
+        <div class="section hidden" id="settings-section">
+            <div class="section-title">
+                ⚙️ Paramètres
+            </div>
+            
+            <div class="settings-section">
+                <div class="form-group">
+                    <label>🔔 Notifications</label>
+                    <input type="checkbox" checked> Activer les notifications
+                </div>
+                <div class="form-group">
+                    <label>🌍 Langue</label>
+                    <input type="select" value="Français">
+                </div>
+                <div class="form-group">
+                    <label>📱 Taille du texte</label>
+                    <input type="range" min="12" max="20" value="16">
+                </div>
+                <button class="submit-btn" onclick="saveSettings()">
+                    💾 Sauvegarder
+                </button>
+            </div>
+        </div>
+        
+        <!-- Section Login -->
+        <div class="section hidden" id="login-section">
+            <div class="section-title">
+                🔐 Connexion
+            </div>
+            
+            <div class="login-section">
+                <div class="form-group">
+                    <label>📧 Email</label>
+                    <input type="email" placeholder="votre@email.com">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Mot de passe</label>
+                    <input type="password" placeholder="Votre mot de passe">
+                </div>
+                <button class="submit-btn" onclick="login()">
+                    🚀 Se connecter
+                </button>
+                <p style="text-align: center; margin-top: 15px; color: var(--text-secondary);">
+                    Pas de compte ? <a href="#" onclick="showRegister()" style="color: var(--accent-primary);">S'inscrire</a>
+                </p>
+            </div>
+        </div>
     </div>
     
     <!-- Navigation Bottom -->
@@ -434,9 +636,13 @@
             <div class="nav-icon">📅</div>
             <div class="nav-label">Concerts</div>
         </div>
-        <div class="nav-item" onclick="openDashboard()">
-            <div class="nav-icon">📊</div>
-            <div class="nav-label">Dashboard</div>
+        <div class="nav-item" onclick="showSection('settings-section')">
+            <div class="nav-icon">⚙️</div>
+            <div class="nav-label">Settings</div>
+        </div>
+        <div class="nav-item" onclick="showSection('login-section')">
+            <div class="nav-icon">🔐</div>
+            <div class="nav-label">Login</div>
         </div>
     </div>
 
@@ -489,6 +695,11 @@
             event.currentTarget.classList.add('active');
         }
         
+        // Créer un live
+        function createLive() {
+            showMessage('🎥 Création de votre live en cours...');
+        }
+        
         // Acheter un billet
         function buyTicket() {
             showMessage('🎫 Billet acheté avec succès !');
@@ -499,9 +710,19 @@
             showMessage(`📱 Lecture du shortz ${type}...`);
         }
         
-        // Ouvrir le dashboard
+        // Ouvrir le dashboard (bouton PRO)
         function openDashboard() {
             window.open('./dashboard.html', '_blank');
+        }
+        
+        // Sauvegarder les paramètres
+        function saveSettings() {
+            showMessage('💾 Paramètres sauvegardés !');
+        }
+        
+        // Se connecter
+        function login() {
+            showMessage('🔐 Connexion en cours...');
         }
         
         // Afficher un message

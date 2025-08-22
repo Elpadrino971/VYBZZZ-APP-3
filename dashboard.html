@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VyBzzZ - Dashboard Business</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -75,6 +76,20 @@
             box-shadow: var(--card-shadow);
             text-align: center;
             border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 0.1;
+            z-index: -1;
         }
         
         .header h1 {
@@ -103,6 +118,18 @@
             text-align: center;
             transition: transform 0.3s ease;
             border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
         }
         
         .metric-card:hover {
@@ -144,12 +171,18 @@
             color: #c62828;
         }
         
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
         .chart-container {
             background: var(--card-bg);
             border-radius: 15px;
             padding: 30px;
             box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
             border: 1px solid var(--border-color);
         }
         
@@ -158,18 +191,63 @@
             font-size: 1.5rem;
             margin-bottom: 20px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        .simple-chart {
-            height: 200px;
-            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        .concert-photos {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .concert-photo {
+            width: 100%;
+            height: 120px;
             border-radius: 10px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.2rem;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .concert-photo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+        }
+        
+        .photo-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 0.8rem;
             font-weight: bold;
+            z-index: 1;
         }
         
         .actions {
@@ -200,6 +278,14 @@
         
         @media (max-width: 768px) {
             .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .photo-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -256,10 +342,38 @@
         </div>
     </div>
     
-    <div class="chart-container">
-        <div class="chart-title">📊 Évolution des Ventes (7 derniers jours)</div>
-        <div class="simple-chart">
-            Graphique des ventes de concerts
+    <div class="charts-section">
+        <div class="chart-container">
+            <div class="chart-title">
+                📊 Évolution des Ventes (7 derniers jours)
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="concert-photos">
+            <div class="chart-title">
+                🎭 Concerts Populaires
+            </div>
+            <div class="photo-grid">
+                <div class="concert-photo">
+                    <div class="photo-label">Rock Night</div>
+                    🎸
+                </div>
+                <div class="concert-photo">
+                    <div class="photo-label">Jazz Evening</div>
+                    🎷
+                </div>
+                <div class="concert-photo">
+                    <div class="photo-label">Pop Concert</div>
+                    🎤
+                </div>
+                <div class="concert-photo">
+                    <div class="photo-label">Classical</div>
+                    🎻
+                </div>
+            </div>
         </div>
     </div>
     
@@ -281,6 +395,7 @@
     <script>
         // Gestion des thèmes
         let currentTheme = 'light';
+        let salesChart;
         
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -294,6 +409,9 @@
                 toggleBtn.textContent = '🌙 Mode Sombre';
                 toggleBtn.style.background = '#d4af37';
             }
+            
+            // Mettre à jour le graphique
+            updateChartTheme();
             
             // Sauvegarder la préférence
             localStorage.setItem('theme', currentTheme);
@@ -314,6 +432,90 @@
             }
         }
         
+        // Créer le graphique des ventes
+        function createSalesChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            const chartColors = currentTheme === 'dark' 
+                ? ['#e50914', '#b2070f', '#ff6b6b', '#ff8e8e', '#ffb3b3', '#ffd8d8', '#ffffff']
+                : ['#d4af37', '#b8860b', '#daa520', '#cd853f', '#deb887', '#f4e4bc', '#fafad2'];
+            
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                    datasets: [{
+                        label: 'Concerts Vendus',
+                        data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: chartColors[0],
+                        backgroundColor: chartColors[0] + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Tickets Vendus',
+                        data: [45, 67, 52, 89, 76, 120, 98],
+                        borderColor: chartColors[1],
+                        backgroundColor: chartColors[1] + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: currentTheme === 'dark' ? '#ffffff' : '#1a1a1a'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: currentTheme === 'dark' ? '#ffffff' : '#1a1a1a'
+                            },
+                            grid: {
+                                color: currentTheme === 'dark' ? '#333333' : '#e9ecef'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: currentTheme === 'dark' ? '#ffffff' : '#1a1a1a'
+                            },
+                            grid: {
+                                color: currentTheme === 'dark' ? '#333333' : '#e9ecef'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Mettre à jour le thème du graphique
+        function updateChartTheme() {
+            if (salesChart) {
+                const chartColors = currentTheme === 'dark' 
+                    ? ['#e50914', '#b2070f', '#ff6b6b', '#ff8e8e', '#ffb3b3', '#ffd8d8', '#ffffff']
+                    : ['#d4af37', '#b8860b', '#daa520', '#cd853f', '#deb887', '#f4e4bc', '#fafad2'];
+                
+                salesChart.data.datasets[0].borderColor = chartColors[0];
+                salesChart.data.datasets[0].backgroundColor = chartColors[0] + '20';
+                salesChart.data.datasets[1].borderColor = chartColors[1];
+                salesChart.data.datasets[1].backgroundColor = chartColors[1] + '20';
+                
+                salesChart.options.plugins.legend.labels.color = currentTheme === 'dark' ? '#ffffff' : '#1a1a1a';
+                salesChart.options.scales.x.ticks.color = currentTheme === 'dark' ? '#ffffff' : '#1a1a1a';
+                salesChart.options.scales.y.ticks.color = currentTheme === 'dark' ? '#ffffff' : '#1a1a1a';
+                salesChart.options.scales.x.grid.color = currentTheme === 'dark' ? '#333333' : '#e9ecef';
+                salesChart.options.scales.y.grid.color = currentTheme === 'dark' ? '#333333' : '#e9ecef';
+                
+                salesChart.update();
+            }
+        }
+        
         // Données simulées pour la démo
         let mockData = {
             concerts: 42,
@@ -325,6 +527,7 @@
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             loadSavedTheme();
+            createSalesChart();
             updateMetrics();
             startLiveUpdates();
         });
